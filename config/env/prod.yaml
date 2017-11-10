@@ -1,0 +1,51 @@
+host: 0.0.0.0:8080
+mongo:
+  default:
+    host: 10.100.174.100
+    name: apiv3
+    user: tuanhm
+    pass: A2FPwbMBSgu7UwvT
+    timeout: 10
+redis:
+    default:
+      host: localhost:6379
+      name: APIV3_Redis_v1 
+      database: 0
+      user:
+      pass:
+    cache:
+      host: localhost:6379
+      name: APIv3_Redis_Cache
+      database: 9
+      user:
+      pass:            
+rabbit_connection: amqp://ghnrabmqx:iD3r7SdO03kk5Nt1ukBx5qcc@192.168.100.31:5672/
+api:
+  extends:
+    load_ward: http://192.168.100.169:5125/api/v3/Cache/GetWards
+    load_hub: http://192.168.100.169:5125/api/v3/Client/LoadHub
+    get_hub: http://192.168.100.169:5125/api/v3/Client/GetHubs
+    add_hub: http://192.168.100.169:5125/api/v3/Client/AddHub
+    update_hub: http://192.168.100.169:5125/api/v3/Client/SaveHub
+    get_district: http://192.168.100.169:5125/api/v3/Cache/GetDistricts
+    find_available_services: http://192.168.100.169:5125/api/v3/Service/FindAvailableServices
+    calculate_fee: http://192.168.100.169:5125/api/v3/Service/CalculateFee
+    create_order: http://192.168.100.169:5125/api/v3/Order/CreateOrder
+    update_order: http://192.168.100.169:5125/api/v3/Order/SaveOrder
+    info_order: http://192.168.100.169:5125/api/v3/Order/LoadOrder
+    cancel_order: http://192.168.100.169:5125/api/v3/Order/CancelOrder
+    return_order: http://192.168.100.169:5125/api/v3/Order/ClientRequest
+    user_login: http://192.168.100.169:5125/api/v3/Client/Login
+consumer:
+  from_exchange: from_exchange_orderstatus
+  push_exchange: push_exchange_orderstatus
+  cod_exchange: cod_exchange
+  queues:
+    from_order_status: from_queue_orderstatus
+    push_order_status: push_queue_orderstatus
+    push_cod: push_queue_cod
+    monitor_request: F1.Monitor.ParnerService.CallBackLog
+client_config:
+  time_out: 10
+  time_clock: 10
+  time_out_tenant: 15

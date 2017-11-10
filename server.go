@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+
+	"bitbucket.org/2tgroup/ciwp-api-users/config"
 
 	"github.com/labstack/echo"
 )
@@ -9,7 +12,11 @@ import (
 func main() {
 	e := echo.New()
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
+		configEnv := config.GetConfig()
+
+		fmt.Println("WE GO?")
+
+		return c.JSON(http.StatusOK, configEnv)
 	})
 	e.Logger.Fatal(e.Start(":1323"))
 }
