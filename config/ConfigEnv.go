@@ -9,8 +9,9 @@ import (
 )
 
 type Schema struct {
-	Host  string `mapstructure:"host"`
-	Mongo map[string]struct {
+	Host   string            `mapstructure:"host"`
+	Server map[string]string `mapstructure:"server"`
+	Mongo  map[string]struct {
 		Host    string        `mapstructure:"host"`
 		Name    string        `mapstructure:"name"`
 		User    string        `mapstructure:"user"`
@@ -40,6 +41,8 @@ type Schema struct {
 		TimeOutTenant int    `mapstructure:"time_out_tenant"`
 		TimeClock     string `mapstructure:"time_clock"`
 	} `mapstructure:"client_config"`
+	ReleaseMode bool   `mapstructure:"release_mode"`
+	SecretKey   string `mapstructure:"secret_key"`
 }
 
 var DataConfig Schema

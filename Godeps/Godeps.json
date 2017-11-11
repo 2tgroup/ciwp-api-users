@@ -4,9 +4,65 @@
 	"GodepVersion": "v79",
 	"Deps": [
 		{
+			"ImportPath": "github.com/dgrijalva/jwt-go",
+			"Comment": "v3.0.0-20-ga539ee1",
+			"Rev": "a539ee1a749a2b895533f979515ac7e6e0f5b650"
+		},
+		{
+			"ImportPath": "github.com/fsnotify/fsnotify",
+			"Comment": "v1.4.2-6-g4da3e2c",
+			"Rev": "4da3e2cfbabc9f751898f250b49f2439785783a1"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/hcl/ast",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/hcl/parser",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/hcl/scanner",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/hcl/strconv",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/hcl/token",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/json/parser",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/json/scanner",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/json/token",
+			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
+		},
+		{
 			"ImportPath": "github.com/labstack/echo",
 			"Comment": "3.2.3-8-gb28538b",
 			"Rev": "b28538b2e3f5446fe6e0e47ee34cd74b662ca2ab"
+		},
+		{
+			"ImportPath": "github.com/labstack/echo/middleware",
+			"Comment": "3.2.3-8-gb28538b",
+			"Rev": "b28538b2e3f5446fe6e0e47ee34cd74b662ca2ab"
+		},
+		{
+			"ImportPath": "github.com/labstack/gommon/bytes",
+			"Comment": "0.2.3",
+			"Rev": "57409ada9da0f2afad6664c49502f8c50fbd8476"
 		},
 		{
 			"ImportPath": "github.com/labstack/gommon/color",
@@ -19,6 +75,16 @@
 			"Rev": "57409ada9da0f2afad6664c49502f8c50fbd8476"
 		},
 		{
+			"ImportPath": "github.com/labstack/gommon/random",
+			"Comment": "0.2.3",
+			"Rev": "57409ada9da0f2afad6664c49502f8c50fbd8476"
+		},
+		{
+			"ImportPath": "github.com/magiconair/properties",
+			"Comment": "v1.7.3-4-g8d7837e",
+			"Rev": "8d7837e64d3c1ee4e54a880c5a920ab4316fc90a"
+		},
+		{
 			"ImportPath": "github.com/mattn/go-colorable",
 			"Comment": "v0.0.9-6-gad5389d",
 			"Rev": "ad5389df28cdac544c99bd7b9161a0b5b6ca9d1b"
@@ -27,6 +93,42 @@
 			"ImportPath": "github.com/mattn/go-isatty",
 			"Comment": "v0.0.3-1-ga5cdd64",
 			"Rev": "a5cdd64afdee435007ee3e9f6ed4684af949d568"
+		},
+		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "d0303fe809921458f417bcf828397a65db30a7e4"
+		},
+		{
+			"ImportPath": "github.com/pelletier/go-toml",
+			"Comment": "v1.0.1-2-g2009e44",
+			"Rev": "2009e44b6f182e34d8ce081ac2767622937ea3d4"
+		},
+		{
+			"ImportPath": "github.com/spf13/afero",
+			"Rev": "3de492c3cda9570c77bc1f495857bfbf4b760efd"
+		},
+		{
+			"ImportPath": "github.com/spf13/afero/mem",
+			"Rev": "3de492c3cda9570c77bc1f495857bfbf4b760efd"
+		},
+		{
+			"ImportPath": "github.com/spf13/cast",
+			"Comment": "v1.1.0",
+			"Rev": "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
+		},
+		{
+			"ImportPath": "github.com/spf13/jwalterweatherman",
+			"Rev": "12bd96e66386c1960ab0f74ced1362f66f552f7b"
+		},
+		{
+			"ImportPath": "github.com/spf13/pflag",
+			"Comment": "v1.0.0-10-g4c012f6",
+			"Rev": "4c012f6dcd9546820e378d0bdda4d8fc772cdfea"
+		},
+		{
+			"ImportPath": "github.com/spf13/viper",
+			"Comment": "v1.0.0-2-gd9cca5e",
+			"Rev": "d9cca5ef33035202efb1586825bdbb15ff9ec3ba"
 		},
 		{
 			"ImportPath": "github.com/valyala/bytebufferpool",
@@ -47,6 +149,18 @@
 		{
 			"ImportPath": "golang.org/x/sys/unix",
 			"Rev": "314a259e304ff91bd6985da2a7149bbf91237993"
+		},
+		{
+			"ImportPath": "golang.org/x/text/transform",
+			"Rev": "1cbadb444a806fd9430d14ad08967ed91da4fa0a"
+		},
+		{
+			"ImportPath": "golang.org/x/text/unicode/norm",
+			"Rev": "1cbadb444a806fd9430d14ad08967ed91da4fa0a"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
 		}
 	]
 }
