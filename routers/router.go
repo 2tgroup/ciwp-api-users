@@ -23,7 +23,7 @@ type (
 var HostNames = make(map[string]*Host)
 
 func init() {
-	HostNames[config.DataConfig.Host] = &Host{auth.Routers()}
+	HostNames[config.DataConfig.Server["api_user"]] = &Host{auth.Routers()}
 	//HostNames[Conf.Server.DomainWeb] = &Host{web.Routers()}
 }
 
@@ -42,7 +42,7 @@ func InitRouter() {
 	middleware.MethodOverride()
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://" + config.DataConfig.Host},
+		AllowOrigins: []string{"http://" + config.DataConfig.Server["api_user"]},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding, echo.HeaderAuthorization},
 	}))
 
@@ -58,19 +58,19 @@ func InitRouter() {
 			e.Logger.Info("Host not found")
 			err = echo.ErrNotFound
 		} else {
-			authModule := &Host{auth.Routers()}
-			authModule.Echo.ServeHTTP(res, req)
+
+			host.Echo.ServeHTTP(res, req)
 		}
 		return
 	})
 
 	if config.DataConfig.Server["graceful"] != "true" {
-		e.Logger.Fatal(e.Start(config.DataConfig.Server["api_user"]))
+		e.Logger.Fatal(e.Start(config.DataConfig.Host))
 	} else {
 		// Graceful Shutdown
 		// Start server
 		go func() {
-			if err := e.Start(config.DataConfig.Server["api_user"]); err != nil {
+			if err := e.Start(config.DataConfig.Host); err != nil {
 				e.Logger.Errorf("Shutting down the server with error:%v", err)
 			}
 		}()

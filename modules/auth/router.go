@@ -15,9 +15,9 @@ func Routers() *echo.Echo {
 	}
 	e.Logger.SetPrefix("Auth")
 	// CSRF
-	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+	/* e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 		TokenLookup: "header:" + echo.HeaderXCSRFToken,
-	}))
+	})) */
 
 	// Gzip
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
