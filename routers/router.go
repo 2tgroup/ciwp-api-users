@@ -67,14 +67,12 @@ func InitRouter() {
 	if config.DataConfig.Server["graceful"] != "true" {
 		e.Logger.Fatal(e.Start(config.DataConfig.Host))
 	} else {
-		// Graceful Shutdown
 		// Start server
 		go func() {
 			if err := e.Start(config.DataConfig.Host); err != nil {
 				e.Logger.Errorf("Shutting down the server with error:%v", err)
 			}
 		}()
-
 		// Wait for interrupt signal to gracefully shutdown the server with
 		// a timeout of 10 seconds.
 		quit := make(chan os.Signal)

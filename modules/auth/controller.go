@@ -4,11 +4,13 @@ import (
 	"net/http"
 	"time"
 
-	"bitbucket.org/2tgroup/ciwp-api-users/config"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+
+	"bitbucket.org/2tgroup/ciwp-api-users/config"
 )
 
+//UserTokenHandler is
 func UserTokenHandler(c echo.Context) error {
 	claims := &AuthJwtClaims{}
 	claims.Name = "TPT - Svideo"
