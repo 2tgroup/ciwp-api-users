@@ -52,6 +52,7 @@ func UserLoginHandler(c echo.Context) error {
 }
 
 func UserRegisterHandler(c echo.Context) error {
+
 	c.JSON(200, map[string]interface{}{"URI": "api user regist"})
 	return nil
 }

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
 )
@@ -21,27 +22,33 @@ func init() {
 	}
 	//load database name
 	if MongoDatabase == nil {
-		SetDatabaseMongoDB()
+		SetDatabaseMongoDB(LoadConfigMongoDB.Name)
 	}
 }
 
-/*Mongodb set database*/
-func SetDatabaseMongoDB() {
-	MongoDatabase = MongoSession.DB(LoadConfigMongoDB.Name)
+/*SetDatabaseMongoDB set database*/
+func SetDatabaseMongoDB(dbName string) {
+	MongoDatabase = MongoSession.DB(dbName)
 }
 
-/*Mongodb connect clone Session*/
+/*GetMongoSessionClone connect clone Session*/
 func GetMongoSessionClone() *mgo.Session {
 	return MongoSession.Clone()
 }
 
-/*Mongodb connect copy Session*/
+/*GetMongoSessionCopy copy session add more resource connect*/
 func GetMongoSessionCopy() *mgo.Session {
 	return MongoSession.Copy()
 }
 
-/*Get Collection*/
+/*GetMongoCollection get current collection*/
 func GetMongoCollection(name string) *mgo.Collection {
 	return MongoDatabase.C(name)
 }
 
+/*MongodbToBson convert to query to bson*/
+func MongodbToBson(query interface{}) (bsonQ interface{}) {
+	byteData, _ := bson.Marshal(query)
+	bson.Unmarshal(byteData, &bsonQ)
+	return bsonQ
+}
