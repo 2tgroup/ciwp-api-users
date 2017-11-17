@@ -45,7 +45,6 @@ func InitRouter() {
 		AllowOrigins: []string{"http://" + config.DataConfig.Server["api_user"]},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding, echo.HeaderAuthorization},
 	}))
-
 	// SEND REQUEST TO ENDPOINT
 	e.Any("/*", func(c echo.Context) (err error) {
 		req, res := c.Request(), c.Response()

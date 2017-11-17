@@ -1,9 +1,11 @@
 package auth
 
 import (
+	validation "bitbucket.org/2tgroup/ciwp-api-users/common/validations"
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func Routers() *echo.Echo {
@@ -23,6 +25,9 @@ func Routers() *echo.Echo {
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Level: 5,
 	}))
+
+	//VALIDATION
+	e.Validator = &validation.CustomValidator{ValidatorX: validator.New()}
 
 	// Middleware
 	e.Use(middleware.Logger())
