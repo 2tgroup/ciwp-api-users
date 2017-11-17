@@ -80,12 +80,17 @@ func (userBase *UserBase) UserCheckPass(password string) bool {
 
 /*UserAdd Insert user*/
 func (userBase *UserBase) UserAdd() error {
-	userBase.UserType = "normal"
 	userBase.UserGeneratePass()
 	if userBase.UserInfo.Currency == "" {
 		userBase.UserInfo.Currency = "usd"
 	}
 	return dbconnect.InserToCollection(collection, userBase)
+}
+
+/*UserAddAdmin add admin manager*/
+func (userBase *UserBase) UserAddAdmin() error {
+	userBase.UserType = "admin"
+	return userBase.UserAdd()
 }
 
 /*UserUpdate Update users*/
