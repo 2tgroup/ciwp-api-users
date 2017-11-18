@@ -12,9 +12,11 @@ import (
 )
 
 var collection string
+var statusUser bool
 
 func init() {
 	collection = "users"
+	statusUser = true
 }
 
 /*UserBase it can be extend */
@@ -26,6 +28,7 @@ type UserBase struct {
 	PasswordHash string        `json:"password_hash,omitempty" bson:"password_hash,omitempty"`
 	UserType     string        `json:"user_type,omitempty" bson:"user_type,omitempty"`
 	UserInfo     UserInfo      `json:"user_info,omitempty" bson:"user_info"`
+	Status       bool          `json:"status,omitempty" bson:"status"`
 	Meta         interface{}   `json:"meta,omitempty" bson:"meta,omitempty"`
 }
 
@@ -81,6 +84,7 @@ func (userBase *UserBase) UserCheckPass() bool {
 
 /*UserAdd Insert user*/
 func (userBase *UserBase) UserAdd() error {
+	userBase.Status = statusUser
 	userBase.UserGeneratePass()
 	if userBase.UserInfo.Currency == "" {
 		userBase.UserInfo.Currency = "usd"
