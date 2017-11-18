@@ -47,17 +47,13 @@ func Routers() *echo.Echo {
 
 	auth.POST("/login", UserLoginHandler)
 
-	auth.GET("/token", UserTokenHandler)
-
-	/* auth.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+	auth.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		Claims:     &AuthJwtClaims{},
 		SigningKey: []byte(config.DataConfig.SecretKey),
-	})) */
+	}))
 
-	//r.GET("/", handler(ApiHandler))
+	auth.GET("/token", UserTokenHandler)
 
-	// curl http://echo.api.localhost:8080/restricted/user -H "Authorization: Bearer XXX"
-	//r.GET("/user", UserHandler)
 	return e
 }
 

@@ -3,9 +3,8 @@ package auth
 import (
 	"fmt"
 	"net/http"
-	"time"
 
-	"g.ghn.vn/go-training/tientp/types"
+	"bitbucket.org/2tgroup/ciwp-api-users/types"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
@@ -16,43 +15,57 @@ import (
 
 //UserTokenHandler is
 func UserTokenHandler(c echo.Context) error {
-	claims := &AuthJwtClaims{}
-	claims.Name = "TPT - Svideo"
-	claims.Email = "support@serverapi.host"
-	claims.StandardClaims = jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*AuthJwtClaims)
+	t, err := getJWToken(claims)
+	if err != nil {
+		//log.Errorf("Wrong request %s", err)
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("token_invaild", fmt.Sprintf("%s", err)))
 	}
-	t, e := getJETToken(claims)
-	if e != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"token": e,
-		})
-	}
-	return c.JSON(http.StatusOK, echo.Map{
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{
 		"token": t,
-	})
+	}, nil))
 }
 
 func UserLoginHandler(c echo.Context) error {
 
-	claims := &AuthJwtClaims{}
-	claims.Name = "TPT - Svideo"
-	claims.Email = "support@serverapi.host"
-	claims.StandardClaims = jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+	u := new(users.UserBase)
+
+	if err := c.Bind(u); err != nil {
+		log.Errorf("Wrong request %s", err)
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "Có lỗi xảy ra, vui lòng thử lại"))
 	}
-	// Create token with claims
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte(config.DataConfig.SecretKey))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"token": err,
-		})
+	if err := c.Validate(u); err != nil {
+		//log.Errorf("Wrong request %s", err)
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("validate", fmt.Sprintf("%s", err)))
 	}
-	return c.JSON(http.StatusOK, echo.Map{
-		"token": t,
+
+	err := u.UserGetOne(echo.Map{
+		"email": u.Email,
 	})
+
+	if err != nil {
+		return c.JSON(http.StatusNotFound, types.PayloadResponseError("not_found", fmt.Sprintf("%s", err)))
+	}
+
+	if checked := u.UserCheckPass(); checked != true {
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("not_found", "Wrong password or email"))
+	}
+
+	token := new(AuthJwtClaims)
+
+	t, _ := token.AuthSignupToken(u)
+
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{
+		"token": t,
+		"user": echo.Map{
+			"_id":       u.ID.Hex(),
+			"email":     u.Email,
+			"name":      u.Name,
+			"user_type": u.UserType,
+			"info":      u.UserInfo,
+		},
+	}, nil))
 }
 
 func UserRegisterHandler(c echo.Context) error {
@@ -61,19 +74,48 @@ func UserRegisterHandler(c echo.Context) error {
 
 	if err := c.Bind(u); err != nil {
 		log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponse("request_invaild", "Có lỗi xảy ra, vui lòng thử lại"))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "Có lỗi xảy ra, vui lòng thử lại"))
 	}
 	if err := c.Validate(u); err != nil {
 		//log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponse("validate", fmt.Sprintf("%s", err)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("validate", fmt.Sprintf("%s", err)))
 	}
+
+	/*Checking User exist or not*/
+
+	u.UserGetOne(echo.Map{
+		"email": u.Email,
+	})
+
+	if u.ID.Hex() != "" {
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("user_exist", "Email exist"))
+	}
+
 	if errAdd := u.UserAdd(); errAdd != nil {
-		return c.JSON(http.StatusBadRequest, types.PayloadResponse("add_user", fmt.Sprintf("%s", errAdd)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("add_user", fmt.Sprintf("%s", errAdd)))
 	}
-	return c.JSON(http.StatusOK, u)
+
+	token := new(AuthJwtClaims)
+
+	t, err := token.AuthSignupToken(u)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("add_user", fmt.Sprintf("%s", err)))
+	}
+
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{
+		"token": t,
+		"user": echo.Map{
+			"_id":       u.ID.Hex(),
+			"email":     u.Email,
+			"name":      u.Name,
+			"user_type": u.UserType,
+			"info":      u.UserInfo,
+		},
+	}, nil))
 }
 
-func getJETToken(Authclaims *AuthJwtClaims) (t string, e error) {
+func getJWToken(Authclaims *AuthJwtClaims) (t string, e error) {
 	// Create token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Authclaims)
 	// Generate encoded token and send it as response.

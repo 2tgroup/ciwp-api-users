@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"bitbucket.org/2tgroup/ciwp-api-users/dbconnects"
+	"github.com/labstack/echo"
 
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
@@ -18,8 +19,8 @@ func init() {
 
 /*UserBase it can be extend */
 type UserBase struct {
-	ID           bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
-	Name         string        `json:"name" validate:"required" bson:"name"`
+	ID           bson.ObjectId `json:"_id,omitempty" bson:"_id,omitempty"`
+	Name         string        `json:"name,omitempty" bson:"name,omitempty"`
 	Email        string        `json:"email" validate:"required,email" bson:"email"`
 	Password     string        `json:"password,omitempty" validate:"required" bson:"password,omitempty"`
 	PasswordHash string        `json:"password_hash,omitempty" bson:"password_hash,omitempty"`
@@ -73,8 +74,8 @@ func (userBase *UserBase) UserGeneratePass() {
 }
 
 //UserCheckPass is verifly password for user
-func (userBase *UserBase) UserCheckPass(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(userBase.PasswordHash), []byte(password))
+func (userBase *UserBase) UserCheckPass() bool {
+	err := bcrypt.CompareHashAndPassword([]byte(userBase.PasswordHash), []byte(userBase.Password))
 	return err == nil
 }
 
@@ -84,7 +85,13 @@ func (userBase *UserBase) UserAdd() error {
 	if userBase.UserInfo.Currency == "" {
 		userBase.UserInfo.Currency = "usd"
 	}
-	return dbconnect.InserToCollection(collection, userBase)
+	if err := dbconnect.InserToCollection(collection, userBase); err != nil {
+		return err
+	}
+	userBase.UserGetOne(echo.Map{
+		"email": userBase.Email,
+	})
+	return nil
 }
 
 /*UserAddAdmin add admin manager*/
@@ -99,23 +106,22 @@ func (userBase *UserBase) UserUpdate() error {
 }
 
 /*UserGetOne get single user*/
-func (userBase *UserBase) UserGetOne(q interface{}) (userData *UserBase, err error) {
+func (userBase *UserBase) UserGetOne(q interface{}) error {
 	/*Convert query to bson*/
 	query := dbconnect.MongodbToBson(q)
 
 	userDataRaw, err := dbconnect.GetOneDataInCollection(collection, query)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	byteData, errMar := json.Marshal(userDataRaw)
 
 	if errMar != nil {
-		return nil, err
+		return err
 	}
+	json.Unmarshal(byteData, &userBase)
 
-	json.Unmarshal(byteData, &userData)
-
-	return userData, err
+	return nil
 }

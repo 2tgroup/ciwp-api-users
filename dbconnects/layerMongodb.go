@@ -51,17 +51,13 @@ func GetOneDataInCollection(collectionName string, q interface{}) (searchResults
 
 /*InserToCollection Insert data to Collection*/
 func InserToCollection(collectionName string, dataInsert interface{}) error {
-	err := WithCollection(collectionName, func(c *mgo.Collection) error {
+	return WithCollection(collectionName, func(c *mgo.Collection) error {
 		return c.Insert(&dataInsert)
 	})
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 /*UpdateOneInCollection update data with condition*/
-func UpdateOneInCollection(collectionName string, condition interface{}, dataSet interface{}) error {
+func UpdateOneInCollection(collectionName string, condition, dataSet interface{}) error {
 
 	ErrQuery := WithCollection(collectionName, func(c *mgo.Collection) error {
 		return c.Update(condition, dataSet)
