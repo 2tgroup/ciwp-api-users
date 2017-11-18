@@ -3,6 +3,7 @@ package users
 import (
 	"encoding/json"
 	"log"
+	"time"
 
 	"bitbucket.org/2tgroup/ciwp-api-users/dbconnects"
 	"github.com/labstack/echo"
@@ -30,6 +31,8 @@ type UserBase struct {
 	UserInfo     UserInfo      `json:"user_info,omitempty" bson:"user_info"`
 	Status       bool          `json:"status,omitempty" bson:"status"`
 	Meta         interface{}   `json:"meta,omitempty" bson:"meta,omitempty"`
+	Create       time.Time     `json:"created"`
+	Updated      time.Time     `json:"updated"`
 }
 
 //UserInfo hold billing info
@@ -71,6 +74,8 @@ func (userBase *UserBase) defaultValueUser() {
 	if userBase.UserInfo.Currency == "" {
 		userBase.UserInfo.Currency = "usd"
 	}
+	userBase.Create = time.Now()
+	userBase.Updated = time.Now()
 }
 
 /*UserGeneratePass crypt password*/
@@ -110,8 +115,20 @@ func (userBase *UserBase) UserAddAdmin() error {
 }
 
 /*UserUpdate Update users*/
-func (userBase *UserBase) UserUpdate() error {
-	return nil
+func (userBase *UserBase) UserUpdate(_id string) error {
+
+	condition := dbconnect.MongodbToBson(echo.Map{
+		"_id": bson.ObjectIdHex(_id),
+	})
+
+	userBase.ID = bson.ObjectIdHex("")
+
+	dataSet := dbconnect.MongodbToBson(echo.Map{
+		"$set": userBase,
+	})
+
+	return dbconnect.UpdateOneInCollection(collection, condition, dataSet)
+
 }
 
 /*UserGetOne get single user*/

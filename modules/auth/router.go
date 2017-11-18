@@ -34,19 +34,14 @@ func Routers() *echo.Echo {
 	e.Use(middleware.Recover())
 
 	// Routers
-	//e.GET("/login", UserLoginHandler)
-	//e.GET("/register", UserRegisterHandler)
 
-	// github.com/hb-go/json
-	//e.GET("/json/encode", handler(JsonEncodeHandler))
-
-	// JWT
 	auth := e.Group("/auth")
 
 	auth.POST("/register", UserRegisterHandler)
 
 	auth.POST("/login", UserLoginHandler)
 
+	// JWT
 	auth.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		Claims:     &AuthJwtClaims{},
 		SigningKey: []byte(config.DataConfig.SecretKey),
@@ -55,18 +50,4 @@ func Routers() *echo.Echo {
 	auth.GET("/token", UserTokenHandler)
 
 	return e
-}
-
-type (
-	HandlerFunc func(*echo.Context) error
-)
-
-/**
- * handler Request
- */
-func handler(h HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		ctx := c.(echo.Context)
-		return h(&ctx)
-	}
 }
