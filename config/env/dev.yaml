@@ -10,11 +10,9 @@ mongo:
     pass: 
     timeout: 10
   users_system:
-    host: localhost
+    host: mongodb://teenmaz:anhvinh1@users-payment-shard-00-00-7ztnb.mongodb.net:27017,users-payment-shard-00-01-7ztnb.mongodb.net:27017,users-payment-shard-00-02-7ztnb.mongodb.net:27017/test?replicaSet=Users-Payment-shard-0&authSource=admin
     name: api-users
-    user: 
-    pass: 
-    timeout: 10  
+    timeout: 60
 redis:
     default:
       host: localhost:6379

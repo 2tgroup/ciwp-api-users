@@ -1,7 +1,9 @@
 package dbconnect
 
 import (
+	"crypto/tls"
 	"log"
+	"net"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -12,18 +14,43 @@ import (
 /*Global Mongodb package*/
 var MongoSession *mgo.Session
 var MongoDatabase *mgo.Database
-var LoadConfigMongoDB = config.DataConfig.Mongo["users_system"]
+var LoadConfigMongoDB = config.DataConfig.Mongo["default"]
 var err error
 
 func init() {
+
 	MongoSession, err = mgo.Dial(LoadConfigMongoDB.Host)
+
+	if err != nil {
+
+		tlsConfig := &tls.Config{}
+
+		tlsConfig.InsecureSkipVerify = true
+
+		dialInfo, errDial := mgo.ParseURL(LoadConfigMongoDB.Host)
+
+		dialInfo.DialServer = func(addr *mgo.ServerAddr) (net.Conn, error) {
+			conn, errx := tls.Dial("tcp", addr.String(), tlsConfig)
+			return conn, errx
+		}
+
+		if errDial != nil {
+			log.Fatal("Can not Parse URL : ", errDial)
+		}
+
+		MongoSession, err = mgo.DialWithInfo(dialInfo)
+
+	}
+
 	if err != nil {
 		log.Fatal("Failed to start the Mongo session")
 	}
+
 	//load database name
 	if MongoDatabase == nil {
 		SetDatabaseMongoDB(LoadConfigMongoDB.Name)
 	}
+
 }
 
 /*SetDatabaseMongoDB set database*/
