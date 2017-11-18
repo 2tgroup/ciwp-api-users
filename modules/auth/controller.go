@@ -63,6 +63,7 @@ func UserLoginHandler(c echo.Context) error {
 			"email":     u.Email,
 			"name":      u.Name,
 			"user_type": u.UserType,
+			"status":    u.Status,
 			"info":      u.UserInfo,
 		},
 	}, nil))
@@ -110,6 +111,7 @@ func UserRegisterHandler(c echo.Context) error {
 			"email":     u.Email,
 			"name":      u.Name,
 			"user_type": u.UserType,
+			"status":    u.Status,
 			"info":      u.UserInfo,
 		},
 	}, nil))

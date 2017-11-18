@@ -65,6 +65,14 @@ type typeUserWallet struct {
 	WalletIDs  map[string]string `json:"wl_ids,omitempty" bson:"wl_ids"`
 }
 
+func (userBase *UserBase) defaultValueUser() {
+	userBase.Status = statusUser
+	userBase.UserType = "mem"
+	if userBase.UserInfo.Currency == "" {
+		userBase.UserInfo.Currency = "usd"
+	}
+}
+
 /*UserGeneratePass crypt password*/
 func (userBase *UserBase) UserGeneratePass() {
 	cryPass, err := bcrypt.GenerateFromPassword([]byte(userBase.Password), bcrypt.DefaultCost)
@@ -84,11 +92,8 @@ func (userBase *UserBase) UserCheckPass() bool {
 
 /*UserAdd Insert user*/
 func (userBase *UserBase) UserAdd() error {
-	userBase.Status = statusUser
 	userBase.UserGeneratePass()
-	if userBase.UserInfo.Currency == "" {
-		userBase.UserInfo.Currency = "usd"
-	}
+	userBase.defaultValueUser()
 	if err := dbconnect.InserToCollection(collection, userBase); err != nil {
 		return err
 	}
