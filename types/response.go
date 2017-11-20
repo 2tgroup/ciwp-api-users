@@ -1,28 +1,23 @@
 package types
 
-type errorResponse struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-}
-
-type successResponse struct {
-	Code    string      `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+type clientResponse struct {
+	Code    string      `json:"code,omitempty"`
+	Message string      `json:"message,omitempty"`
+	Data    interface{} `json:"data,omitempty"`
 	Meta    interface{} `json:"meta,omitempty"`
 }
 
 //PayloadResponseError is response error message
-func PayloadResponseError(code, message string) errorResponse {
-	return errorResponse{
+func PayloadResponseError(code, message string) clientResponse {
+	return clientResponse{
 		Code:    code,
 		Message: message,
 	}
 }
 
 // PayloadResponseOk struct data response success
-func PayloadResponseOk(data, meta interface{}) successResponse {
-	return successResponse{
+func PayloadResponseOk(data, meta interface{}) clientResponse {
+	return clientResponse{
 		Code:    "Ok",
 		Message: "Successfully",
 		Data:    data,

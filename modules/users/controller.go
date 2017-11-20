@@ -25,5 +25,5 @@ func UserUpdateHandler(c echo.Context) error {
 		//log.Errorf("Wrong request %s", err)
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("action_invaild", fmt.Sprintf("%s", err)))
 	}
-	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{}, nil))
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(nil, nil))
 }
