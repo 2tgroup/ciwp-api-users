@@ -2,6 +2,7 @@ package router
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"os"
 	"os/signal"
@@ -9,6 +10,7 @@ import (
 
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
 	"bitbucket.org/2tgroup/ciwp-api-users/modules/auth"
+	"bitbucket.org/2tgroup/ciwp-api-users/modules/users"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -23,7 +25,8 @@ type (
 var HostNames = make(map[string]*Host)
 
 func init() {
-	HostNames[config.DataConfig.Server["api_user"]] = &Host{auth.Routers()}
+	HostNames[config.DataConfig.Server["api_user_auth"]] = &Host{auth.RoutersAuth()}
+	HostNames[config.DataConfig.Server["api_user_user"]] = &Host{users.RoutersUser()}
 	//HostNames[Conf.Server.DomainWeb] = &Host{web.Routers()}
 }
 
@@ -42,13 +45,17 @@ func InitRouter() {
 	middleware.MethodOverride()
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://" + config.DataConfig.Server["api_user"]},
+		AllowOrigins: []string{"http://" + config.DataConfig.Server["api_user_auth"]},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding, echo.HeaderAuthorization},
 	}))
 	// SEND REQUEST TO ENDPOINT
 	e.Any("/*", func(c echo.Context) (err error) {
 		req, res := c.Request(), c.Response()
-		u, _err := url.Parse(c.Scheme() + "://" + req.Host)
+
+		u, _err := url.Parse(c.Scheme() + "://" + req.Host + req.RequestURI)
+
+		fmt.Println("REQ====", u.Path)
+
 		if _err != nil {
 			e.Logger.Errorf("Request URL parse error:%v", _err)
 		}

@@ -15,9 +15,7 @@ func init() {
 }
 
 func UserUpdateHandler(c echo.Context) error {
-
 	u := new(UserBase)
-
 	if err := c.Bind(u); err != nil {
 		log.Errorf("Wrong request %s", err)
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("data_invaild", "Có lỗi xảy ra, vui lòng thử lại"))

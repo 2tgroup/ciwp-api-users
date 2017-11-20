@@ -5,7 +5,9 @@ import (
 	"log"
 	"time"
 
+	"bitbucket.org/2tgroup/ciwp-api-users/config"
 	"bitbucket.org/2tgroup/ciwp-api-users/dbconnects"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
 	"golang.org/x/crypto/bcrypt"
@@ -150,4 +152,34 @@ func (userBase *UserBase) UserGetOne(q interface{}) error {
 	json.Unmarshal(byteData, &userBase)
 
 	return nil
+}
+
+/*Customize Auth Claims*/
+
+type AuthJwtClaims struct {
+	ID       bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	Name     string        `json:"name"`
+	Email    string        `json:"email"`
+	UserType string        `json:"user_type,omitempty" bson:"user_type,omitempty"`
+	Info     interface{}
+	Extends  map[string]interface{} `json:"meta"`
+	jwt.StandardClaims
+}
+
+//AuthSignupToken
+func (userBase *UserBase) AuthSignupToken() (string, error) {
+
+	a := AuthJwtClaims{}
+	a.StandardClaims = jwt.StandardClaims{
+		ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+	}
+	a.ID = userBase.ID
+	a.Name = userBase.Name
+	a.Email = userBase.Email
+	a.UserType = userBase.UserType
+	a.Info = userBase.UserInfo
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, a)
+	// Generate encoded token and send it as response.
+	t, err := token.SignedString([]byte(config.DataConfig.SecretKey))
+	return t, err
 }

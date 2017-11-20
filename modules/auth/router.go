@@ -3,12 +3,13 @@ package auth
 import (
 	validation "bitbucket.org/2tgroup/ciwp-api-users/common/validations"
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
+	"bitbucket.org/2tgroup/ciwp-api-users/modules/users"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func Routers() *echo.Echo {
+func RoutersAuth() *echo.Echo {
 	// Echo instance
 	e := echo.New()
 	// Customization
@@ -35,19 +36,19 @@ func Routers() *echo.Echo {
 
 	// Routers
 
-	auth := e.Group("/auth")
+	routerAuth := e.Group("/auth")
 
-	auth.POST("/register", UserRegisterHandler)
+	routerAuth.POST("/register", UserRegisterHandler)
 
-	auth.POST("/login", UserLoginHandler)
+	routerAuth.POST("/login", UserLoginHandler)
 
 	// JWT
-	auth.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		Claims:     &AuthJwtClaims{},
+	routerAuth.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		Claims:     &users.AuthJwtClaims{},
 		SigningKey: []byte(config.DataConfig.SecretKey),
 	}))
 
-	auth.GET("/token", UserTokenHandler)
+	routerAuth.GET("/token", UserTokenHandler)
 
 	return e
 }

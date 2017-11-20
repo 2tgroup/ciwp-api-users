@@ -16,7 +16,7 @@ import (
 //UserTokenHandler is
 func UserTokenHandler(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*AuthJwtClaims)
+	claims := user.Claims.(*users.AuthJwtClaims)
 	t, err := getJWToken(claims)
 	if err != nil {
 		//log.Errorf("Wrong request %s", err)
@@ -52,9 +52,7 @@ func UserLoginHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("not_found", "Wrong password or email"))
 	}
 
-	token := new(AuthJwtClaims)
-
-	t, _ := token.AuthSignupToken(u)
+	t, _ := u.AuthSignupToken()
 
 	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{
 		"token": t,
@@ -96,9 +94,7 @@ func UserRegisterHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("add_user", fmt.Sprintf("%s", errAdd)))
 	}
 
-	token := new(AuthJwtClaims)
-
-	t, err := token.AuthSignupToken(u)
+	t, err := u.AuthSignupToken()
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("add_user", fmt.Sprintf("%s", err)))
@@ -117,7 +113,7 @@ func UserRegisterHandler(c echo.Context) error {
 	}, nil))
 }
 
-func getJWToken(Authclaims *AuthJwtClaims) (t string, e error) {
+func getJWToken(Authclaims *users.AuthJwtClaims) (t string, e error) {
 	// Create token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Authclaims)
 	// Generate encoded token and send it as response.

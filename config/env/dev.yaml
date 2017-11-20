@@ -1,7 +1,8 @@
 host: 0.0.0.0:9292
 server:
   graceful: true
-  api_user: localhost
+  api_user_auth: auth
+  api_user_user: users
 mongo:
   default:
     host: localhost
