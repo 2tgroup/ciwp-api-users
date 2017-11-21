@@ -15,11 +15,11 @@ import (
 )
 
 var collection string
-var statusUser bool
+var statusUser int
 
 func init() {
 	collection = "users"
-	statusUser = true
+	statusUser = 1
 }
 
 /*UserBase it can be extend */
@@ -31,10 +31,10 @@ type UserBase struct {
 	PasswordHash string        `json:"password_hash,omitempty" bson:"password_hash,omitempty"`
 	UserType     string        `json:"user_type,omitempty" bson:"user_type,omitempty"`
 	UserInfo     UserInfo      `json:"user_info,omitempty" bson:"user_info"`
-	Status       bool          `json:"status,omitempty" bson:"status,omitempty"`
+	Status       int           `json:"status,omitempty" bson:"status,omitempty"`
 	Meta         interface{}   `json:"meta,omitempty" bson:"meta,omitempty"`
-	Create       time.Time     `json:"created,omitempty"`
-	Updated      time.Time     `json:"updated"`
+	Create       time.Time     `json:"created,omitempty" bson:"created,omitempty"`
+	Updated      time.Time     `json:"updated,omitempty" bson:"updated,omitempty"`
 }
 
 //UserInfo hold billing info
@@ -122,6 +122,11 @@ func (userBase *UserBase) UserUpdate(_id string) error {
 	condition := dbconnect.MongodbToBson(echo.Map{
 		"_id": bson.ObjectIdHex(_id),
 	})
+
+	if userBase.Password != "" {
+		userBase.UserGeneratePass()
+	}
+	// delete field
 	userBase.Password = ""
 	userBase.UserType = ""
 	userBase.Updated = time.Now()
@@ -164,7 +169,7 @@ type AuthJwtClaims struct {
 	jwt.StandardClaims
 }
 
-//AuthSignupToken
+//AuthSignupToken genarate token
 func (userBase *UserBase) AuthSignupToken() (string, error) {
 
 	a := AuthJwtClaims{}

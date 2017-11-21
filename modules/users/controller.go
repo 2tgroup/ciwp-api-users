@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 
@@ -20,6 +21,15 @@ func UserUpdateHandler(c echo.Context) error {
 		log.Errorf("Wrong request %s", err)
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("data_invaild", "Có lỗi xảy ra, vui lòng thử lại"))
 	}
+
+	if u.Status != 0 {
+		user := c.Get("user").(*jwt.Token)
+		premission := user.Claims.(*AuthJwtClaims)
+		if premission.UserType != "admin" {
+			u.Status = 0
+		}
+	}
+
 	err := u.UserUpdate(u.ID.Hex())
 	if err != nil {
 		//log.Errorf("Wrong request %s", err)
