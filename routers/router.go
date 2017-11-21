@@ -2,13 +2,13 @@ package router
 
 import (
 	"context"
-	"fmt"
-	"net/url"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
+	"bitbucket.org/2tgroup/ciwp-api-users/modules/auth"
 	"bitbucket.org/2tgroup/ciwp-api-users/modules/users"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -24,16 +24,17 @@ type (
 var HostNames = make(map[string]*Host)
 
 func init() {
-	//HostNames[config.DataConfig.Server["api_user_auth"]] = &Host{auth.RoutersAuth()}
+	HostNames[config.DataConfig.Server["api_user_auth"]] = &Host{auth.RoutersAuth()}
 	HostNames[config.DataConfig.Server["api_user_user"]] = &Host{users.RoutersUser()}
 	//HostNames[Conf.Server.DomainWeb] = &Host{web.Routers()}
 }
 
+//GetInfoEndpoint get all module in hostname
 func GetInfoEndpoint() map[string]*Host {
 	return HostNames
 }
 
-/*Init Run Router*/
+/*InitRouter Run Router*/
 func InitRouter() {
 	e := echo.New()
 	// Middleware
@@ -49,29 +50,20 @@ func InitRouter() {
 	}))
 	// SEND REQUEST TO ENDPOINT
 	e.Any("/*", func(c echo.Context) (err error) {
+
 		req, res := c.Request(), c.Response()
 
-		u, _err := url.Parse(c.Scheme() + "://" + req.Host)
+		reqURLModule := strings.Split(req.RequestURI, "/")
 
-		fmt.Println("REQ====", u.Path)
+		moduleName := reqURLModule[1]
 
-		if _err != nil {
-			e.Logger.Errorf("Request URL parse error:%v", _err)
-		}
-
-		for ix, host := range HostNames {
-			fmt.Println("ix:", ix)
-			host.Echo.ServeHTTP(res, req)
-		}
-
-		/* host := HostNames[u.Hostname()]
+		host := HostNames[moduleName]
 		if host == nil {
 			e.Logger.Info("Host not found")
 			err = echo.ErrNotFound
 		} else {
-
 			host.Echo.ServeHTTP(res, req)
-		} */
+		}
 
 		return
 	})
