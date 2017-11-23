@@ -2,6 +2,7 @@ package users
 
 import (
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
+	"bitbucket.org/2tgroup/ciwp-api-users/types"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -35,7 +36,7 @@ func RoutersUser() *echo.Echo {
 	routerUser := e.Group("/users")
 	// JWT
 	routerUser.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		Claims:     &AuthJwtClaims{},
+		Claims:     &types.AuthJwtClaims{},
 		SigningKey: []byte(config.DataConfig.SecretKey),
 	}))
 	routerUser.POST("/update", UserUpdateHandler)

@@ -16,7 +16,7 @@ import (
 //UserTokenHandler is
 func UserTokenHandler(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*users.AuthJwtClaims)
+	claims := user.Claims.(*types.AuthJwtClaims)
 	t, err := getJWToken(claims)
 	if err != nil {
 		//log.Errorf("Wrong request %s", err)
@@ -113,7 +113,7 @@ func UserRegisterHandler(c echo.Context) error {
 	}, nil))
 }
 
-func getJWToken(Authclaims *users.AuthJwtClaims) (t string, e error) {
+func getJWToken(Authclaims *types.AuthJwtClaims) (t string, e error) {
 	// Create token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Authclaims)
 	// Generate encoded token and send it as response.

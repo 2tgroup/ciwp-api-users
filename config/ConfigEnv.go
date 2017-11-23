@@ -12,11 +12,13 @@ type Schema struct {
 	Host   string            `mapstructure:"host"`
 	Server map[string]string `mapstructure:"server"`
 	Mongo  map[string]struct {
-		Host    string        `mapstructure:"host"`
-		Name    string        `mapstructure:"name"`
-		User    string        `mapstructure:"user"`
-		Pass    string        `mapstructure:"pass"`
-		Timeout time.Duration `mapstructure:"timeout"`
+		Host         string        `mapstructure:"host"`
+		URL          string        `mapstructure:"url"`
+		Name         string        `mapstructure:"name"`
+		User         string        `mapstructure:"user"`
+		Pass         string        `mapstructure:"pass"`
+		Timeout      time.Duration `mapstructure:"timeout"`
+		CloudTimeOut time.Duration `mapstructure:"cloud_timeout"`
 	} `mapstructure:"mongo"`
 	Redis map[string]struct {
 		Host string `mapstructure:"host"`

@@ -3,7 +3,7 @@ package auth
 import (
 	validation "bitbucket.org/2tgroup/ciwp-api-users/common/validations"
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
-	"bitbucket.org/2tgroup/ciwp-api-users/modules/users"
+	"bitbucket.org/2tgroup/ciwp-api-users/types"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	validator "gopkg.in/go-playground/validator.v9"
@@ -44,7 +44,7 @@ func RoutersAuth() *echo.Echo {
 
 	// JWT
 	routerAuth.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		Claims:     &users.AuthJwtClaims{},
+		Claims:     &types.AuthJwtClaims{},
 		SigningKey: []byte(config.DataConfig.SecretKey),
 	}))
 

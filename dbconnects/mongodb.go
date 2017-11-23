@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"log"
 	"net"
+	"time"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -19,15 +20,30 @@ var err error
 
 func init() {
 
-	MongoSession, err = mgo.Dial(LoadConfigMongoDB.Host)
+	autoReconnectMongodb()
+
+	//load database name
+	if MongoDatabase == nil {
+		SetDatabaseMongoDB(LoadConfigMongoDB.Name)
+	}
+
+}
+
+func autoReconnectMongodb() {
+
+	MongoSession, err = mgo.DialWithTimeout(LoadConfigMongoDB.Host, LoadConfigMongoDB.Timeout*time.Second)
 
 	if err != nil {
+
+		log.Println("Can not connecting to local mongodb...")
 
 		tlsConfig := &tls.Config{}
 
 		tlsConfig.InsecureSkipVerify = true
 
-		dialInfo, errDial := mgo.ParseURL(LoadConfigMongoDB.Host)
+		dialInfo, errDial := mgo.ParseURL(LoadConfigMongoDB.URL)
+
+		dialInfo.Timeout = LoadConfigMongoDB.CloudTimeOut * time.Second
 
 		dialInfo.DialServer = func(addr *mgo.ServerAddr) (net.Conn, error) {
 			conn, errx := tls.Dial("tcp", addr.String(), tlsConfig)
@@ -38,17 +54,21 @@ func init() {
 			log.Fatal("Can not Parse URL : ", errDial)
 		}
 
+		log.Println("We connecting to cloud mongodb...")
+
 		MongoSession, err = mgo.DialWithInfo(dialInfo)
+
+		if err != nil {
+			log.Println("We reconnecting to mongodb...")
+			autoReconnectMongodb()
+		} else {
+			log.Println("We connected with cloud mongodb")
+		}
 
 	}
 
 	if err != nil {
 		log.Fatal("Failed to start the Mongo session")
-	}
-
-	//load database name
-	if MongoDatabase == nil {
-		SetDatabaseMongoDB(LoadConfigMongoDB.Name)
 	}
 
 }

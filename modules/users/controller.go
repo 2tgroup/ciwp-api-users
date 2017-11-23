@@ -15,6 +15,7 @@ func init() {
 
 }
 
+//UserUpdateHandler update user
 func UserUpdateHandler(c echo.Context) error {
 	u := new(UserBase)
 	if err := c.Bind(u); err != nil {
@@ -24,7 +25,7 @@ func UserUpdateHandler(c echo.Context) error {
 
 	if u.Status != 0 {
 		user := c.Get("user").(*jwt.Token)
-		premission := user.Claims.(*AuthJwtClaims)
+		premission := user.Claims.(*types.AuthJwtClaims)
 		if premission.UserType != "admin" {
 			u.Status = 0
 		}
