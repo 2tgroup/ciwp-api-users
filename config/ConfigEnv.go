@@ -57,8 +57,10 @@ func init() {
 	if env == "prod" {
 		config.SetConfigName("prod")
 	} else if env == "test" {
+		config.AddConfigPath("$GOPATH/src/bitbucket.org/2tgroup/ciwp-api-users/config/env")
 		config.SetConfigName("test")
 	} else {
+		config.AddConfigPath("$GOPATH/src/bitbucket.org/2tgroup/ciwp-api-users/config/env")
 		config.SetConfigName("dev")
 	}
 	config.AutomaticEnv()
