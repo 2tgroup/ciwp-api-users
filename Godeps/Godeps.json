@@ -14,6 +14,21 @@
 			"Rev": "4da3e2cfbabc9f751898f250b49f2439785783a1"
 		},
 		{
+			"ImportPath": "github.com/go-playground/locales",
+			"Comment": "v0.11.1-2-g1e5f116",
+			"Rev": "1e5f1161c6416a5ff48840eb8724a394e48cc534"
+		},
+		{
+			"ImportPath": "github.com/go-playground/locales/currency",
+			"Comment": "v0.11.1-2-g1e5f116",
+			"Rev": "1e5f1161c6416a5ff48840eb8724a394e48cc534"
+		},
+		{
+			"ImportPath": "github.com/go-playground/universal-translator",
+			"Comment": "v0.16.0-1-g7120149",
+			"Rev": "71201497bace774495daed26a3874fd339e0b538"
+		},
+		{
 			"ImportPath": "github.com/hashicorp/hcl",
 			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
 		},
@@ -140,11 +155,19 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/acme",
-			"Rev": "7d9177d70076375b9a59c8fde23d52d9c4a7ecd5"
+			"Rev": "6a293f2d4b14b8e6d3f0539e383f6d0d30fce3fd"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/acme/autocert",
-			"Rev": "7d9177d70076375b9a59c8fde23d52d9c4a7ecd5"
+			"Rev": "6a293f2d4b14b8e6d3f0539e383f6d0d30fce3fd"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/bcrypt",
+			"Rev": "6a293f2d4b14b8e6d3f0539e383f6d0d30fce3fd"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/blowfish",
+			"Rev": "6a293f2d4b14b8e6d3f0539e383f6d0d30fce3fd"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
@@ -157,6 +180,36 @@
 		{
 			"ImportPath": "golang.org/x/text/unicode/norm",
 			"Rev": "1cbadb444a806fd9430d14ad08967ed91da4fa0a"
+		},
+		{
+			"ImportPath": "gopkg.in/go-playground/validator.v9",
+			"Comment": "v9.7.0",
+			"Rev": "a021b2ec9a8a8bb970f3f15bc42617cb520e8a64"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Comment": "r2016.08.01-5-g3f83fa5",
+			"Rev": "3f83fa5005286a7fe593b055f0d7771a7dce4655"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/bson",
+			"Comment": "r2016.08.01-5-g3f83fa5",
+			"Rev": "3f83fa5005286a7fe593b055f0d7771a7dce4655"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/internal/json",
+			"Comment": "r2016.08.01-5-g3f83fa5",
+			"Rev": "3f83fa5005286a7fe593b055f0d7771a7dce4655"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/internal/sasl",
+			"Comment": "r2016.08.01-5-g3f83fa5",
+			"Rev": "3f83fa5005286a7fe593b055f0d7771a7dce4655"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/internal/scram",
+			"Comment": "r2016.08.01-5-g3f83fa5",
+			"Rev": "3f83fa5005286a7fe593b055f0d7771a7dce4655"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
