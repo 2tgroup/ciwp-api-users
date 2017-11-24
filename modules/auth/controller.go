@@ -33,7 +33,7 @@ func UserLoginHandler(c echo.Context) error {
 
 	if err := c.Bind(u); err != nil {
 		log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "Có lỗi xảy ra, vui lòng thử lại"))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "error invaild request, please check your data"))
 	}
 	if err := c.Validate(u); err != nil {
 		//log.Errorf("Wrong request %s", err)
@@ -73,7 +73,8 @@ func UserRegisterHandler(c echo.Context) error {
 
 	if err := c.Bind(u); err != nil {
 		log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "Có lỗi xảy ra, vui lòng thử lại"))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "error invaild request, please check your data"))
+		//return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "error invaild request, please check your data"))
 	}
 	if err := c.Validate(u); err != nil {
 		//log.Errorf("Wrong request %s", err)
