@@ -24,7 +24,11 @@ type HelperTesting struct {
 //HelperTestMakeRequest make request simple
 func (ht *HelperTesting) HelperTestMakeRequest(method, target string, body string) {
 	ht.Eco = echo.New()
-	ht.Req = httptest.NewRequest(echo.POST, target, strings.NewReader(body))
+	if body == "" {
+		ht.Req = httptest.NewRequest(method, target, nil)
+	} else {
+		ht.Req = httptest.NewRequest(method, target, strings.NewReader(body))
+	}
 	ht.Res = httptest.NewRecorder()
 }
 
@@ -34,9 +38,9 @@ func (ht *HelperTesting) HelperTestSetDataType(contentType string) {
 }
 
 //HelperTestSetHeader set custom header
-func (ht *HelperTesting) HelperTestSetHeader(cusHeader map[string]string) {
+func (ht *HelperTesting) HelperTestSetHeader(cusHeader map[string]interface{}) {
 	for field, val := range cusHeader {
-		ht.Req.Header.Set(field, val)
+		ht.Req.Header.Set(field, val.(string))
 	}
 }
 
