@@ -32,7 +32,7 @@ func UserLoginHandler(c echo.Context) error {
 	u := new(users.UserBase)
 
 	if err := c.Bind(u); err != nil {
-		log.Errorf("Wrong request %s", err)
+		//log.Errorf("Wrong request %s", err)
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "error invaild request, please check your data"))
 	}
 	if err := c.Validate(u); err != nil {
@@ -52,19 +52,19 @@ func UserLoginHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("not_found", "Wrong password or email"))
 	}
 
-	t, _ := u.AuthSignupToken()
+	t, err := u.AuthSignupToken()
 
-	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{
-		"token": t,
-		"user": echo.Map{
-			"_id":       u.ID.Hex(),
-			"email":     u.Email,
-			"name":      u.Name,
-			"user_type": u.UserType,
-			"status":    u.Status,
-			"info":      u.UserInfo,
-		},
-	}, nil))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("not_found", fmt.Sprintf("%s", err)))
+	}
+
+	uRes := new(AuthResponse)
+
+	uRes.Token = t
+
+	uRes.AuthSetResponse(*u)
+
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(uRes, nil))
 }
 
 func UserRegisterHandler(c echo.Context) error {
@@ -101,17 +101,18 @@ func UserRegisterHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("add_user", fmt.Sprintf("%s", err)))
 	}
 
-	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{
-		"token": t,
-		"user": echo.Map{
-			"_id":       u.ID.Hex(),
-			"email":     u.Email,
-			"name":      u.Name,
-			"user_type": u.UserType,
-			"status":    u.Status,
-			"info":      u.UserInfo,
-		},
-	}, nil))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("not_found", fmt.Sprintf("%s", err)))
+	}
+
+	uRes := new(AuthResponse)
+
+	uRes.Token = t
+
+	uRes.AuthSetResponse(*u)
+
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(uRes, nil))
+
 }
 
 func getJWToken(Authclaims *types.AuthJwtClaims) (t string, e error) {
