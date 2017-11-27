@@ -23,4 +23,5 @@ func (au *AuthResponse) AuthSetResponse(user users.UserBase) {
 	au.UserInfo.Email = user.Email
 	au.UserInfo.UserType = user.UserType
 	au.UserInfo.Info = user.UserInfo
+	au.UserInfo.Status = user.Status
 }

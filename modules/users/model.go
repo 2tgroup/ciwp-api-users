@@ -45,7 +45,7 @@ type UserInfo struct {
 	Wallets        []typeUserWallet `json:"wallets,omitempty" bson:"wallets"`
 	CurrentCard    typeUserCard     `json:"current_card,omitempty" bson:"current_card"`
 	CurrentWallets typeUserWallet   `json:"current_wallet,omitempty" bson:"current_wallet"`
-	CurrentBlance  float32          `json:"current_blance,omitempty" bson:"current_blance"`
+	CurrentBlance  float32          `json:"current_blance" bson:"current_blance"`
 	Address        UserAddress      `json:"address,omitempty" bson:"address"`
 	Currency       string           `json:"currency,omitempty"`
 }
@@ -77,6 +77,7 @@ func (userBase *UserBase) defaultValueUser() {
 	if userBase.UserInfo.Currency == "" {
 		userBase.UserInfo.Currency = "usd"
 	}
+	userBase.UserInfo.CurrentBlance = 0
 	userBase.Create = time.Now()
 	userBase.Updated = time.Now()
 }
@@ -96,6 +97,18 @@ func (userBase *UserBase) UserGeneratePass() {
 func (userBase *UserBase) UserCheckPass() bool {
 	err := bcrypt.CompareHashAndPassword([]byte(userBase.PasswordHash), []byte(userBase.Password))
 	return err == nil
+}
+
+//UserCheckEmailExits true/false
+func (userBase *UserBase) UserCheckEmailExits(_id string) bool {
+	condition := dbconnect.MongodbToBson(echo.Map{
+		"_id": echo.Map{
+			"$ne": bson.ObjectIdHex(_id),
+		},
+		"email": userBase.Email,
+	})
+
+	return dbconnect.CountRowsInCollection(collection, condition) > 0
 }
 
 /*UserAdd Insert user*/
@@ -130,9 +143,31 @@ func (userBase *UserBase) UserUpdate(_id string) error {
 	// delete field
 	userBase.Password = ""
 	userBase.UserType = ""
+	userBase.UserInfo.CurrentBlance = 0
+	//updated datetime
 	userBase.Updated = time.Now()
 	dataSet := dbconnect.MongodbToBson(echo.Map{
-		"$set": userBase,
+		"$set": dbconnect.MongodbToBson(userBase),
+	})
+	return dbconnect.UpdateOneInCollection(collection, condition, dataSet)
+}
+
+/*UserSystemUpdate open Update users*/
+func (userBase *UserBase) UserSystemUpdate(_id string) error {
+
+	condition := dbconnect.MongodbToBson(echo.Map{
+		"_id": bson.ObjectIdHex(_id),
+	})
+
+	if userBase.Password != "" {
+		userBase.UserGeneratePass()
+	}
+	// delete field
+	userBase.Password = ""
+	//updated datetime
+	userBase.Updated = time.Now()
+	dataSet := dbconnect.MongodbToBson(echo.Map{
+		"$set": dbconnect.MongodbToBson(userBase),
 	})
 	return dbconnect.UpdateOneInCollection(collection, condition, dataSet)
 }
