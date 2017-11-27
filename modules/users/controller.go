@@ -6,7 +6,6 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-	"github.com/labstack/gommon/log"
 
 	"bitbucket.org/2tgroup/ciwp-api-users/types"
 )
@@ -17,24 +16,36 @@ func init() {
 
 //UserUpdateHandler update user
 func UserUpdateHandler(c echo.Context) error {
+
 	u := new(UserBase)
+
 	if err := c.Bind(u); err != nil {
-		log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("data_invaild", "Có lỗi xảy ra, vui lòng thử lại"))
+		//log.Errorf("Wrong request %s", err)
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.DataInvaild, "error invaild request, please check your data"))
 	}
 
+	user := c.Get("user").(*jwt.Token)
+
+	premission := user.Claims.(*types.AuthJwtClaims)
+
 	if u.Status != 0 {
-		user := c.Get("user").(*jwt.Token)
-		premission := user.Claims.(*types.AuthJwtClaims)
 		if premission.UserType != "admin" {
 			u.Status = 0
 		}
 	}
 
-	err := u.UserUpdate(u.ID.Hex())
-	if err != nil {
-		//log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("action_invaild", fmt.Sprintf("%s", err)))
+	if premission.ID.Hex() != u.ID.Hex() && premission.UserType != "admin" {
+		return c.JSON(http.StatusForbidden, types.PayloadResponseError(types.ActionInvaild, "Not owner profile"))
 	}
+
+	if u.UserCheckEmailExits(u.ID.Hex()) == true {
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.DataExist, "Email exist"))
+	}
+
+	if err := u.UserUpdate(u.ID.Hex()); err != nil {
+		//log.Errorf("Wrong request %s", err)
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ActionInvaild, fmt.Sprintf("%s", err)))
+	}
+
 	return c.JSON(http.StatusOK, types.PayloadResponseOk(nil, nil))
 }

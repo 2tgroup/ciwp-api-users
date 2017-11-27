@@ -20,7 +20,7 @@ func UserTokenHandler(c echo.Context) error {
 	t, err := getJWToken(claims)
 	if err != nil {
 		//log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("token_invaild", fmt.Sprintf("%s", err)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ReqInvaild, fmt.Sprintf("%s", err)))
 	}
 	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{
 		"token": t,
@@ -33,11 +33,11 @@ func UserLoginHandler(c echo.Context) error {
 
 	if err := c.Bind(u); err != nil {
 		//log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "error invaild request, please check your data"))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ReqInvaild, "error invaild request, please check your data"))
 	}
 	if err := c.Validate(u); err != nil {
 		//log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("validate", fmt.Sprintf("%s", err)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.NotValidate, fmt.Sprintf("%s", err)))
 	}
 
 	err := u.UserGetOne(echo.Map{
@@ -45,17 +45,17 @@ func UserLoginHandler(c echo.Context) error {
 	})
 
 	if err != nil {
-		return c.JSON(http.StatusNotFound, types.PayloadResponseError("not_found", fmt.Sprintf("%s", err)))
+		return c.JSON(http.StatusNotFound, types.PayloadResponseError(types.ActionNotfound, fmt.Sprintf("%s", err)))
 	}
 
 	if checked := u.UserCheckPass(); checked != true {
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("not_found", "Wrong password or email"))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ActionNotfound, "Wrong password or email"))
 	}
 
 	t, err := u.AuthSignupToken()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("not_found", fmt.Sprintf("%s", err)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ActionNotfound, fmt.Sprintf("%s", err)))
 	}
 
 	uRes := new(AuthResponse)
@@ -73,12 +73,12 @@ func UserRegisterHandler(c echo.Context) error {
 
 	if err := c.Bind(u); err != nil {
 		log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "error invaild request, please check your data"))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ReqInvaild, "error invaild request, please check your data"))
 		//return c.JSON(http.StatusBadRequest, types.PayloadResponseError("request_invaild", "error invaild request, please check your data"))
 	}
 	if err := c.Validate(u); err != nil {
 		//log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("validate", fmt.Sprintf("%s", err)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.NotValidate, fmt.Sprintf("%s", err)))
 	}
 
 	/*Checking User exist or not*/
@@ -88,21 +88,21 @@ func UserRegisterHandler(c echo.Context) error {
 	})
 
 	if u.ID.Hex() != "" {
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("user_exist", "Email exist"))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.DataExist, "Email exist"))
 	}
 
 	if errAdd := u.UserAdd(); errAdd != nil {
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("add_user", fmt.Sprintf("%s", errAdd)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ActionError, fmt.Sprintf("%s", errAdd)))
 	}
 
 	t, err := u.AuthSignupToken()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("add_user", fmt.Sprintf("%s", err)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ActionError, fmt.Sprintf("%s", err)))
 	}
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError("not_found", fmt.Sprintf("%s", err)))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ActionNotfound, fmt.Sprintf("%s", err)))
 	}
 
 	uRes := new(AuthResponse)
