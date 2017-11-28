@@ -54,6 +54,9 @@ func init() {
 	env := os.Getenv("GO_ENV")
 	config.AddConfigPath(".")
 	config.AddConfigPath("config/env")
+
+	port := os.Getenv("PORT")
+
 	if env == "prod" {
 		config.SetConfigName("prod")
 	} else if env == "test" {
@@ -72,6 +75,11 @@ func init() {
 	if err != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
+
+	if port != "" {
+		DataConfig.Host = port
+	}
+
 }
 
 func GetConfig() Schema {
