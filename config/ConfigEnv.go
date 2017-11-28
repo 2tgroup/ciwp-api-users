@@ -54,9 +54,7 @@ func init() {
 	env := os.Getenv("GO_ENV")
 	config.AddConfigPath(".")
 	config.AddConfigPath("config/env")
-
 	port := os.Getenv("PORT")
-
 	if env == "prod" {
 		config.SetConfigName("prod")
 	} else if env == "test" {
