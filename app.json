@@ -1,18 +1,15 @@
 {
-  "name": "ciwp-api-users",
-  "description": "",
-  "scripts": {
-  },
-  "env": {
-  },
-  "formation": {
-  },
-  "addons": [
-    "mongolab"
-  ],
-  "buildpacks": [
-    {
-      "url": "heroku/go"
-    }
-  ]
+    "name": "ciwp-api-users",
+    "description": "",
+    "scripts": {
+        "test": "go test tests/*/* -v"
+    },
+    "env": {},
+    "formation": {},
+    "addons": [
+        "mongolab"
+    ],
+    "buildpacks": [{
+        "url": "heroku/go"
+    }]
 }
