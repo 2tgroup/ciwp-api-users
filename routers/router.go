@@ -45,7 +45,7 @@ func InitRouter() {
 	middleware.MethodOverride()
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://" + config.DataConfig.Host},
+		//AllowOrigins: []string{"http://" + config.DataConfig.Host},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding, echo.HeaderAuthorization},
 	}))
 	// SEND REQUEST TO ENDPOINT
