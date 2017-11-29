@@ -80,7 +80,7 @@ func init() {
 	}
 
 	if port != "" {
-		DataConfig.Host = port
+		DataConfig.Host = ":"+port
 	}
 
 }
