@@ -29,6 +29,36 @@
 			"Rev": "71201497bace774495daed26a3874fd339e0b538"
 		},
 		{
+			"ImportPath": "github.com/go-redis/redis",
+			"Comment": "v6.6.1",
+			"Rev": "fdafb11e5fa5d52d965e12073c8a58468c98ebe2"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal",
+			"Comment": "v6.6.1",
+			"Rev": "fdafb11e5fa5d52d965e12073c8a58468c98ebe2"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/consistenthash",
+			"Comment": "v6.6.1",
+			"Rev": "fdafb11e5fa5d52d965e12073c8a58468c98ebe2"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/hashtag",
+			"Comment": "v6.6.1",
+			"Rev": "fdafb11e5fa5d52d965e12073c8a58468c98ebe2"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/pool",
+			"Comment": "v6.6.1",
+			"Rev": "fdafb11e5fa5d52d965e12073c8a58468c98ebe2"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/proto",
+			"Comment": "v6.6.1",
+			"Rev": "fdafb11e5fa5d52d965e12073c8a58468c98ebe2"
+		},
+		{
 			"ImportPath": "github.com/hashicorp/hcl",
 			"Rev": "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
 		},
