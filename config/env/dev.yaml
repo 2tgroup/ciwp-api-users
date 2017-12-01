@@ -28,7 +28,7 @@ redis:
       user:
       pass:
     cache:
-      host: localhost:6379
+      host: redis://h:p12f03bafbe5107bbcb5f6737062d7f832080f23e2ee8f70633a88363696caa56@ec2-34-239-85-93.compute-1.amazonaws.com:20799
       name: APIv3_Redis_Cache
       database: 9
       user:
