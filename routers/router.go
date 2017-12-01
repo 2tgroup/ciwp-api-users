@@ -47,7 +47,7 @@ func InitRouter() {
 	middleware.MethodOverride()
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"https://*.serverapi.host", "http://localhost:4200"},
+		AllowOrigins: []string{"https://svideo.serverapi.host", "http://localhost:4200"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding, echo.HeaderAuthorization},
 	}))
 	// SEND REQUEST TO ENDPOINT
