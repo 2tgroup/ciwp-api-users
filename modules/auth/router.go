@@ -48,6 +48,8 @@ func RoutersAuth() *echo.Echo {
 		SigningKey: []byte(config.DataConfig.SecretKey),
 	}))
 
+	routerAuth.GET("/logout", UserLogoutHandler)
+
 	routerAuth.GET("/token", UserTokenHandler)
 
 	return e
