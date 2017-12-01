@@ -7,11 +7,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
 	"bitbucket.org/2tgroup/ciwp-api-users/modules/auth"
 	"bitbucket.org/2tgroup/ciwp-api-users/modules/users"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 )
 
 /*Hold all endpoint*/
@@ -42,10 +43,11 @@ func InitRouter() {
 	e.Use(middleware.Recover())
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.SecureWithConfig(middleware.DefaultSecureConfig))
+	//e.Use(session.Middleware(sessions.NewCookieStore([]byte(config.DataConfig.SecretKey))))
 	middleware.MethodOverride()
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		//AllowOrigins: []string{"http://" + config.DataConfig.Host},
+		AllowOrigins: []string{"https://*.serverapi.host", "http://localhost:4200"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding, echo.HeaderAuthorization},
 	}))
 	// SEND REQUEST TO ENDPOINT
@@ -58,6 +60,7 @@ func InitRouter() {
 		moduleName := reqURLModule[1]
 
 		host := HostNames[moduleName]
+
 		if host == nil {
 			e.Logger.Info("Host not found")
 			err = echo.ErrNotFound
