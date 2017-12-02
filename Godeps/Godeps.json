@@ -9,6 +9,18 @@
 			"Rev": "a539ee1a749a2b895533f979515ac7e6e0f5b650"
 		},
 		{
+			"ImportPath": "github.com/eefret/gravatar",
+			"Rev": "6c5d9d4dd0ce593bbc3b1f38439e0ea6255dc35d"
+		},
+		{
+			"ImportPath": "github.com/eefret/gravatar/default_img",
+			"Rev": "6c5d9d4dd0ce593bbc3b1f38439e0ea6255dc35d"
+		},
+		{
+			"ImportPath": "github.com/eefret/gravatar/rating",
+			"Rev": "6c5d9d4dd0ce593bbc3b1f38439e0ea6255dc35d"
+		},
+		{
 			"ImportPath": "github.com/fsnotify/fsnotify",
 			"Comment": "v1.4.2-6-g4da3e2c",
 			"Rev": "4da3e2cfbabc9f751898f250b49f2439785783a1"
