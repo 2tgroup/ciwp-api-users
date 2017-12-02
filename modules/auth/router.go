@@ -42,6 +42,8 @@ func RoutersAuth() *echo.Echo {
 
 	routerAuth.POST("/login", UserLoginHandler)
 
+	routerAuth.POST("/forgot", UserForgotHandler)
+
 	// JWT
 	routerAuth.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		Claims:     &types.AuthJwtClaims{},

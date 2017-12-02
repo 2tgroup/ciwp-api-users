@@ -5,22 +5,26 @@ import (
 	"log"
 	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/eefret/gravatar"
+	"github.com/labstack/echo"
+	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/mgo.v2/bson"
+
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
 	"bitbucket.org/2tgroup/ciwp-api-users/dbconnects"
 	"bitbucket.org/2tgroup/ciwp-api-users/types"
-	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/labstack/echo"
-
-	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/mgo.v2/bson"
 )
 
 var collection string
 var statusUser int
+var gAvatar *gravatar.Gravatar
+var err error
 
 func init() {
 	collection = "users"
 	statusUser = 1
+	gAvatar, err = gravatar.New()
 }
 
 /*UserBase it can be extend */
@@ -31,6 +35,7 @@ type UserBase struct {
 	Password     string        `json:"password,omitempty" validate:"required" bson:"password,omitempty"`
 	PasswordHash string        `json:"password_hash,omitempty" bson:"password_hash,omitempty"`
 	UserType     string        `json:"user_type,omitempty" bson:"user_type,omitempty"`
+	Avatar       string        `json:"avatar,omitempty" bson:"avatar,omitempty"`
 	UserInfo     UserInfo      `json:"user_info,omitempty" bson:"user_info"`
 	Status       int           `json:"status,omitempty" bson:"status,omitempty"`
 	Meta         interface{}   `json:"meta,omitempty" bson:"meta,omitempty"`
@@ -115,6 +120,7 @@ func (userBase *UserBase) UserCheckEmailExits(_id string) bool {
 func (userBase *UserBase) UserAdd() error {
 	userBase.UserGeneratePass()
 	userBase.defaultValueUser()
+	userBase.Avatar = gAvatar.URLParse(userBase.Email)
 	if err := dbconnect.InserToCollection(collection, userBase); err != nil {
 		return err
 	}
@@ -201,6 +207,7 @@ func (userBase *UserBase) AuthSignupToken() (string, error) {
 		ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 	}
 	a.ID = userBase.ID
+	a.Avatar = userBase.Avatar
 	a.Name = userBase.Name
 	a.Email = userBase.Email
 	a.UserType = userBase.UserType

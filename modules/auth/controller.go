@@ -26,6 +26,7 @@ func UserTokenHandler(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, types.PayloadResponseOk(echo.Map{
 		"token": t,
+		"user":  user.Claims,
 	}, nil))
 }
 
@@ -115,6 +116,32 @@ func UserRegisterHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, types.PayloadResponseOk(uRes, nil))
 
+}
+
+func UserForgotHandler(c echo.Context) error {
+
+	u := new(users.UserBase)
+
+	if err := c.Bind(u); err != nil {
+		//log.Errorf("Wrong request %s", err)
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ReqInvaild, "error invaild request, please check your data"))
+	}
+
+	err := u.UserGetOne(echo.Map{
+		"email": u.Email,
+	})
+
+	if err != nil {
+		return c.JSON(http.StatusNotFound, types.PayloadResponseError(types.ActionNotfound, "Email not exist"))
+	}
+
+	u.UserGeneratePass()
+
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, types.PayloadResponseError(types.ActionNotfound, "Wrong password or email"))
+	}
+
+	return c.JSON(http.StatusOK, types.PayloadResponseMgs(types.ActionSuceess, "The new password has been sent to your email "+u.Email))
 }
 
 func UserLogoutHandler(c echo.Context) error {

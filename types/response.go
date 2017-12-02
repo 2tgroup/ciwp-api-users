@@ -9,6 +9,11 @@ type clientResponse struct {
 
 //PayloadResponseError is response error message
 func PayloadResponseError(code, message string) clientResponse {
+	return PayloadResponseMgs(code, message)
+}
+
+//PayloadResponseMgs is response error message
+func PayloadResponseMgs(code, message string) clientResponse {
 	return clientResponse{
 		Code:    code,
 		Message: message,

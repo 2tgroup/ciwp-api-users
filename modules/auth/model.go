@@ -7,6 +7,7 @@ type authUser struct {
 	Email    string      `json:"email"`
 	Name     string      `json:"name"`
 	UserType string      `json:"user_type"`
+	Avatar   string      `json:"avatar"`
 	Status   int         `json:"status"`
 	Info     interface{} `json:"info"`
 }
@@ -24,4 +25,5 @@ func (au *AuthResponse) AuthSetResponse(user users.UserBase) {
 	au.UserInfo.UserType = user.UserType
 	au.UserInfo.Info = user.UserInfo
 	au.UserInfo.Status = user.Status
+	au.UserInfo.Avatar = user.Avatar
 }
