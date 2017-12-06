@@ -38,6 +38,7 @@ func GetInfoEndpoint() map[string]*Host {
 /*InitRouter Run Router*/
 func InitRouter() {
 	e := echo.New()
+	//e.HideBanner = true
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -47,7 +48,7 @@ func InitRouter() {
 	middleware.MethodOverride()
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"https://svideo.serverapi.host", "http://localhost:4200"},
+		AllowOrigins: []string{"https://svideo.serverapi.host", "http://localhost:4200", "*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding, echo.HeaderAuthorization},
 	}))
 	// SEND REQUEST TO ENDPOINT

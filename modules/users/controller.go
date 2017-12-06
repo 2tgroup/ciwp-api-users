@@ -7,11 +7,12 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
+	"bitbucket.org/2tgroup/ciwp-api-users/common/findcountry"
 	"bitbucket.org/2tgroup/ciwp-api-users/types"
 )
 
 func init() {
-
+	UserLoadCountry()
 }
 
 //UserUpdateHandler update user
@@ -48,4 +49,17 @@ func UserUpdateHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, types.PayloadResponseOk(nil, nil))
+}
+
+func UserLoadCountry() {
+
+	data := findcountry.Country.MapByName("South Korea")
+	fmt.Println(data.Name)           // Will Print: South Korea
+	fmt.Println(data.Alpha2)         // Will Print: KR
+	fmt.Println(data.Alpha3)         // Will Print: KOR
+	fmt.Println(data.Currency[0])    // Will Print: KRW
+	fmt.Println(data.CallingCode[0]) // Will Print: 82
+	fmt.Println(data.Region)         // Will Print: Asia
+	fmt.Println(data.Subregion)      // Will Print: Eastern Asia
+
 }
