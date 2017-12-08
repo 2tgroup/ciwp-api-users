@@ -2,6 +2,7 @@ package findcountry
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,26 +10,37 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"bitbucket.org/2tgroup/ciwp-api-users/dbconnects"
+	"github.com/labstack/echo"
 )
 
 const (
-	//defaultFile = "https://raw.githubusercontent.com/pirsquare/country-mapper/master/files/country_info.csv"
+	defaultLink = "https://raw.githubusercontent.com/pirsquare/country-mapper/master/files/country_info.csv"
 	defaultFile = "./common/findcountry/country_info.csv"
+	collection  = "country"
 )
 
 //Country to get start get list
 var Country *CountryInfoClient
 
+//TypeLoad  is can load by file,link,database
+var TypeLoad string = "database"
+
 func init() {
-	client, err := Load()
+	client, err := LoadCountryBy(TypeLoad)
 	if err != nil {
 		panic(err)
 	}
+	client.ListData()
+	client.ListMapByAlpha2()
 	Country = client
 }
 
 type CountryInfoClient struct {
-	Data []*CountryInfo
+	Data         []*CountryInfo
+	List         []CountryInfo
+	ListByAlpha2 []string `json:"list_by_alpha2,omitempty"`
 }
 
 func (c *CountryInfoClient) MapByName(name string) *CountryInfo {
@@ -104,15 +116,29 @@ func (c *CountryInfoClient) MapBySubregion(subregion string) []*CountryInfo {
 	return rowList
 }
 
+func (c *CountryInfoClient) ListData() {
+	if len(c.List) < 1 {
+		for _, row := range c.Data {
+			c.List = append(c.List, *row)
+		}
+	}
+}
+
+func (c *CountryInfoClient) ListMapByAlpha2() {
+	for _, row := range c.Data {
+		c.ListByAlpha2 = append(c.ListByAlpha2, (row.Alpha2))
+	}
+}
+
 type CountryInfo struct {
-	Name           string
-	AlternateNames []string
-	Alpha2         string
-	Alpha3         string
-	Currency       []string
-	CallingCode    []string
-	Region         string
-	Subregion      string
+	Name           string   `json:"Name,omitempty" bson:"Name"`
+	AlternateNames []string `json:"AlternateNames,omitempty" bson:"AlternateNames"`
+	Alpha2         string   `json:"Alpha2,omitempty" bson:"Alpha2"`
+	Alpha3         string   `json:"Alpha3,omitempty" bson:"Alpha3"`
+	Currency       []string `json:"Currency,omitempty" bson:"Currency"`
+	CallingCode    []string `json:"CallingCode,omitempty" bson:"CallingCode"`
+	Region         string   `json:"Region,omitempty" bson:"Region"`
+	Subregion      string   `json:"Subregion,omitempty" bson:"Subregion"`
 }
 
 func (c *CountryInfo) AlternateNamesLower() []string {
@@ -227,11 +253,74 @@ func Load(specifiedURL ...string) (*CountryInfoClient, error) {
 			Region:         row[10],
 			Subregion:      row[11],
 		}
-
+		//condition := dbconnect.MongodbToBson(record)
+		countRow := dbconnect.CountRowsInCollection(collection, record)
+		if countRow < 1 {
+			dbconnect.InserToCollection(collection, record)
+		}
 		recordList = append(recordList, record)
 	}
-
 	return &CountryInfoClient{Data: recordList}, nil
+}
+
+func runMigration() {
+	var data [][]string
+	data, _ = readCSVFromLocal(defaultFile)
+	for idx, row := range data {
+		// skip header
+		if idx == 0 {
+			continue
+		}
+		// get name
+		name := strings.Split(row[0], ",")[:1][0]
+		// use commonly used & altSpellings names as AlternateNames
+		alternateNames := strings.Split(row[0], ",")[1:]
+		alternateNames = append(alternateNames, strings.Split(row[8], ",")...)
+
+		record := &CountryInfo{
+			Name:           name,
+			AlternateNames: alternateNames,
+			Alpha2:         row[2],
+			Alpha3:         row[4],
+			Currency:       strings.Split(row[5], ","),
+			CallingCode:    strings.Split(row[6], ","),
+			Region:         row[10],
+			Subregion:      row[11],
+		}
+		//condition := dbconnect.MongodbToBson(record)
+		countRow := dbconnect.CountRowsInCollection(collection, record)
+		if countRow < 1 {
+			dbconnect.InserToCollection(collection, record)
+		}
+	}
+}
+
+func LoadCountryBy(from string) (*CountryInfoClient, error) {
+	switch from {
+	case "link":
+		return Load([]string{defaultLink}...)
+	case "file":
+		return Load()
+	default:
+		runMigration()
+		return LoadFromDatabase()
+	}
+}
+
+func LoadFromDatabase() (*CountryInfoClient, error) {
+
+	recordList := []*CountryInfo{}
+
+	dataFound, err := dbconnect.SearchDataInCollection(collection, echo.Map{}, 0, 0)
+
+	byteData, errMar := json.Marshal(dataFound)
+
+	if errMar != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(byteData, &recordList)
+
+	return &CountryInfoClient{Data: recordList}, err
 }
 
 func stringInSlice(a string, list []string) bool {

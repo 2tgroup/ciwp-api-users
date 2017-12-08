@@ -7,7 +7,7 @@ mongo:
   default:
     host: localhost
     url: mongodb://teenmaz:anhvinh1@users-payment-shard-00-00-7ztnb.mongodb.net:27017,users-payment-shard-00-01-7ztnb.mongodb.net:27017,users-payment-shard-00-02-7ztnb.mongodb.net:27017/test?replicaSet=Users-Payment-shard-0&authSource=admin
-    name: api-users
+    name: test-users-system
     user: 
     pass: 
     timeout: 5
@@ -15,7 +15,7 @@ mongo:
   users_system:
     host: localhost
     url: mongodb://teenmaz:anhvinh1@users-payment-shard-00-00-7ztnb.mongodb.net:27017,users-payment-shard-00-01-7ztnb.mongodb.net:27017,users-payment-shard-00-02-7ztnb.mongodb.net:27017/test?replicaSet=Users-Payment-shard-0&authSource=admin
-    name: api-users
+    name: test-users-system
     user: 
     pass: 
     timeout: 10

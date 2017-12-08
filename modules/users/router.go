@@ -1,11 +1,17 @@
 package users
 
 import (
-	"bitbucket.org/2tgroup/ciwp-api-users/config"
-	"bitbucket.org/2tgroup/ciwp-api-users/types"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/labstack/gommon/log"
+
+	"bitbucket.org/2tgroup/ciwp-api-users/config"
+	"bitbucket.org/2tgroup/ciwp-api-users/types"
 )
+
+func init() {
+	log.Info("Loaded module USERS")
+}
 
 func RoutersUser() *echo.Echo {
 	// Echo instance
@@ -34,6 +40,8 @@ func RoutersUser() *echo.Echo {
 
 	// Routers
 	routerUser := e.Group("/users")
+	routerUser.GET("/country", UserListCountryByAlpha2)
+	routerUser.GET("/country/:alpha2", UserListCounty)
 	// JWT
 	routerUser.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		Claims:     &types.AuthJwtClaims{},

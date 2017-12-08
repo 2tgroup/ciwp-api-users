@@ -1,14 +1,19 @@
 package auth
 
 import (
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+	"github.com/labstack/gommon/log"
+	validator "gopkg.in/go-playground/validator.v9"
+
 	validation "bitbucket.org/2tgroup/ciwp-api-users/common/validations"
 	"bitbucket.org/2tgroup/ciwp-api-users/config"
 	"bitbucket.org/2tgroup/ciwp-api-users/types"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
-	validator "gopkg.in/go-playground/validator.v9"
 )
 
+func init() {
+	log.Info("Loaded module AUTH")
+}
 func RoutersAuth() *echo.Echo {
 	// Echo instance
 	e := echo.New()
