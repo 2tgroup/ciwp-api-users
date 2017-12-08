@@ -1,6 +1,8 @@
 package auth
 
-import "bitbucket.org/2tgroup/ciwp-api-users/modules/users"
+import (
+	"bitbucket.org/2tgroup/ciwp-api-users/modules/users"
+)
 
 type authUser struct {
 	ID       string      `json:"_id"`

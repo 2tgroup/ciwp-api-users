@@ -36,7 +36,7 @@ type UserBase struct {
 	PasswordHash string        `json:"password_hash,omitempty" bson:"password_hash,omitempty"`
 	UserType     string        `json:"user_type,omitempty" bson:"user_type,omitempty"`
 	Avatar       string        `json:"avatar,omitempty" bson:"avatar,omitempty"`
-	UserInfo     UserInfo      `json:"user_info,omitempty" bson:"user_info"`
+	UserInfo     UserInfo      `json:"info,omitempty" bson:"info"`
 	Status       int           `json:"status,omitempty" bson:"status,omitempty"`
 	Meta         interface{}   `json:"meta,omitempty" bson:"meta,omitempty"`
 	Create       time.Time     `json:"created,omitempty" bson:"created,omitempty"`
@@ -216,4 +216,36 @@ func (userBase *UserBase) AuthSignupToken() (string, error) {
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(config.DataConfig.SecretKey))
 	return t, err
+}
+
+type authUser struct {
+	ID       string      `json:"_id"`
+	Email    string      `json:"email"`
+	Name     string      `json:"name"`
+	UserType string      `json:"user_type"`
+	Avatar   string      `json:"avatar"`
+	Status   int         `json:"status"`
+	Info     interface{} `json:"info"`
+}
+
+type UserStructResponse struct {
+	Token    string   `json:"token"`
+	UserInfo authUser `json:"user"`
+}
+
+//UserResponse response to client struct user
+func (userBase *UserBase) UserResponse() *UserStructResponse {
+	resAuth := new(UserStructResponse)
+	token, _ := userBase.AuthSignupToken()
+	resAuth.UserInfo.ID = userBase.ID.Hex()
+	resAuth.UserInfo.Name = userBase.Name
+	resAuth.UserInfo.Email = userBase.Email
+	resAuth.UserInfo.UserType = userBase.UserType
+	resAuth.UserInfo.Info = userBase.UserInfo
+	resAuth.UserInfo.Status = userBase.Status
+	resAuth.UserInfo.Avatar = userBase.Avatar
+	return &UserStructResponse{
+		Token:    token,
+		UserInfo: resAuth.UserInfo,
+	}
 }

@@ -48,7 +48,11 @@ func UserUpdateHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.ActionInvaild, fmt.Sprintf("%s", err)))
 	}
 
-	return c.JSON(http.StatusOK, types.PayloadResponseOk(nil, nil))
+	u.UserGetOne(echo.Map{
+		"_id": u.ID,
+	})
+
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(u.UserResponse(), nil))
 }
 
 func UserLoadCountry() {
