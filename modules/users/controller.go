@@ -11,10 +11,6 @@ import (
 	"bitbucket.org/2tgroup/ciwp-api-users/types"
 )
 
-func init() {
-	UserLoadCountry()
-}
-
 //UserUpdateHandler update user
 func UserUpdateHandler(c echo.Context) error {
 
@@ -55,6 +51,22 @@ func UserUpdateHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, types.PayloadResponseOk(u.UserResponse(), nil))
 }
 
+//UserListCountry return list countries
+func UserListCountryByAlpha2(c echo.Context) error {
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(findcountry.Country.ListByAlpha2, nil))
+}
+
+func UserListCounty(c echo.Context) error {
+
+	dataFound := findcountry.Country.MapByAlpha2(c.Param("alpha2"))
+
+	if dataFound == nil {
+		return c.JSON(http.StatusNotFound, types.PayloadResponseError(types.DataNotFound, "Country not found"))
+	}
+
+	return c.JSON(http.StatusOK, types.PayloadResponseOk(dataFound, nil))
+}
+
 func UserLoadCountry() {
 
 	data := findcountry.Country.MapByName("South Korea")
@@ -65,5 +77,4 @@ func UserLoadCountry() {
 	fmt.Println(data.CallingCode[0]) // Will Print: 82
 	fmt.Println(data.Region)         // Will Print: Asia
 	fmt.Println(data.Subregion)      // Will Print: Eastern Asia
-
 }

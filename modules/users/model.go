@@ -62,6 +62,7 @@ type UserAddress struct {
 	State    string `json:"state,omitempty" bson:"state"`
 	PostCode string `json:"post_code,omitempty" bson:"post_code"`
 	Country  string `json:"country,omitempty" bson:"country"`
+	Phone    string `json:"phone,omitempty" bson:"phone"`
 }
 
 type typeUserCard struct {
@@ -82,6 +83,7 @@ func (userBase *UserBase) defaultValueUser() {
 	if userBase.UserInfo.Currency == "" {
 		userBase.UserInfo.Currency = "usd"
 	}
+	userBase.UserInfo.Address.Country = "US"
 	userBase.UserInfo.CurrentBlance = 0
 	userBase.Create = time.Now()
 	userBase.Updated = time.Now()
