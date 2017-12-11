@@ -4,15 +4,16 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"bitbucket.org/2tgroup/ciwp-api-users/dbconnects"
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
+
+	"bitbucket.org/2tgroup/ciwp-api-users/dbconnects"
 )
 
 const (
@@ -35,6 +36,7 @@ func init() {
 	client.ListData()
 	client.ListMapByAlpha2()
 	Country = client
+	log.Info("Loaded common/findcountry")
 }
 
 type CountryInfoClient struct {
