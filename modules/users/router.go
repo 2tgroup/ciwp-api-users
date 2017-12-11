@@ -10,7 +10,8 @@ import (
 )
 
 func init() {
-	log.Info("Loaded module USERS")
+	log.SetPrefix("modules/users")
+	log.Info("Loaded modules/users")
 }
 
 func RoutersUser() *echo.Echo {
@@ -20,7 +21,6 @@ func RoutersUser() *echo.Echo {
 	if config.DataConfig.ReleaseMode {
 		e.Debug = false
 	}
-	e.Logger.SetPrefix("User")
 	// CSRF
 	/* e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 		TokenLookup: "header:" + echo.HeaderXCSRFToken,

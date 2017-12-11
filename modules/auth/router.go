@@ -12,7 +12,8 @@ import (
 )
 
 func init() {
-	log.Info("Loaded module AUTH")
+	log.SetPrefix("modules/auth")
+	log.Info("Loaded modules/auth")
 }
 func RoutersAuth() *echo.Echo {
 	// Echo instance
@@ -21,7 +22,6 @@ func RoutersAuth() *echo.Echo {
 	if config.DataConfig.ReleaseMode {
 		e.Debug = false
 	}
-	e.Logger.SetPrefix("Auth")
 	// CSRF
 	/* e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 		TokenLookup: "header:" + echo.HeaderXCSRFToken,
@@ -55,6 +55,7 @@ func RoutersAuth() *echo.Echo {
 		SigningKey: []byte(config.DataConfig.SecretKey),
 	}))
 
+	// need way to store old token to backlist
 	routerAuth.GET("/logout", UserLogoutHandler)
 
 	routerAuth.GET("/token", UserTokenHandler)
