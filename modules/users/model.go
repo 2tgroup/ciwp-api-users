@@ -50,7 +50,7 @@ type UserInfo struct {
 	Wallets        []typeUserWallet `json:"wallets,omitempty" bson:"wallets"`
 	CurrentCard    typeUserCard     `json:"current_card,omitempty" bson:"current_card"`
 	CurrentWallets typeUserWallet   `json:"current_wallet,omitempty" bson:"current_wallet"`
-	CurrentBlance  float32          `json:"current_blance" bson:"current_blance"`
+	CurrentBlance  float32          `json:"current_blance,omitempty" bson:"current_blance"`
 	Address        UserAddress      `json:"address,omitempty" bson:"address"`
 	Currency       string           `json:"currency,omitempty"`
 }
@@ -151,7 +151,6 @@ func (userBase *UserBase) UserUpdate(_id string) error {
 	// delete field
 	userBase.Password = ""
 	userBase.UserType = ""
-	userBase.UserInfo.CurrentBlance = 0
 	//updated datetime
 	userBase.Updated = time.Now()
 	dataSet := dbconnect.MongodbToBson(echo.Map{
