@@ -31,12 +31,12 @@ func init() {
 type UserBase struct {
 	ID           bson.ObjectId `json:"_id,omitempty" bson:"_id,omitempty"`
 	Name         string        `json:"name,omitempty" bson:"name,omitempty"`
-	Email        string        `json:"email" validate:"required,email" bson:"email"`
+	Email        string        `json:"email,omitempty" validate:"required,email" bson:"email,omitempty"`
 	Password     string        `json:"password,omitempty" validate:"required" bson:"password,omitempty"`
 	PasswordHash string        `json:"password_hash,omitempty" bson:"password_hash,omitempty"`
 	UserType     string        `json:"user_type,omitempty" bson:"user_type,omitempty"`
 	Avatar       string        `json:"avatar,omitempty" bson:"avatar,omitempty"`
-	UserInfo     UserInfo      `json:"info,omitempty" bson:"info"`
+	UserInfo     UserInfo      `json:"info,omitempty" bson:"info,omitempty"`
 	Status       int           `json:"status,omitempty" bson:"status,omitempty"`
 	Meta         interface{}   `json:"meta,omitempty" bson:"meta,omitempty"`
 	Create       time.Time     `json:"created,omitempty" bson:"created,omitempty"`

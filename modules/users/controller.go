@@ -3,6 +3,7 @@ package users
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
@@ -18,7 +19,7 @@ func UserUpdateHandler(c echo.Context) error {
 
 	if err := c.Bind(u); err != nil {
 		//log.Errorf("Wrong request %s", err)
-		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.DataInvaild, "error invaild request, please check your data"))
+		return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.DataInvaild, "Error invaild request, please check your data"))
 	}
 
 	user := c.Get("user").(*jwt.Token)
@@ -28,6 +29,13 @@ func UserUpdateHandler(c echo.Context) error {
 	if u.Status != 0 {
 		if premission.UserType != "admin" {
 			u.Status = 0
+		}
+	}
+
+	if u.Email != "" {
+		regEmail := regexp.MustCompile(`^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w+)+$`)
+		if !regEmail.MatchString(u.Email) {
+			return c.JSON(http.StatusBadRequest, types.PayloadResponseError(types.DataInvaild, "You should input correct format email!"))
 		}
 	}
 

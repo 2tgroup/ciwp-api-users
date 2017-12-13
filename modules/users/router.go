@@ -47,7 +47,7 @@ func RoutersUser() *echo.Echo {
 		Claims:     &types.AuthJwtClaims{},
 		SigningKey: []byte(config.DataConfig.SecretKey),
 	}))
-	routerUser.POST("/update", UserUpdateHandler)
+	routerUser.PUT("/update", UserUpdateHandler)
 
 	return e
 }
