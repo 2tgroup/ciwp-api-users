@@ -5,13 +5,14 @@ import (
 )
 
 type authUser struct {
-	ID       string      `json:"_id"`
-	Email    string      `json:"email"`
-	Name     string      `json:"name"`
-	UserType string      `json:"user_type"`
-	Avatar   string      `json:"avatar"`
-	Status   int         `json:"status"`
-	Info     interface{} `json:"info"`
+	ID          string      `json:"_id"`
+	Email       string      `json:"email"`
+	Name        string      `json:"name"`
+	UserType    string      `json:"user_type"`
+	Avatar      string      `json:"avatar"`
+	Status      int         `json:"status"`
+	SesstionExp int64       `json:"session_exp"`
+	Info        interface{} `json:"info"`
 }
 
 type AuthResponse struct {
@@ -28,4 +29,5 @@ func (au *AuthResponse) AuthSetResponse(user users.UserBase) {
 	au.UserInfo.Info = user.UserInfo
 	au.UserInfo.Status = user.Status
 	au.UserInfo.Avatar = user.Avatar
+	au.UserInfo.SesstionExp = user.SesstionExp
 }

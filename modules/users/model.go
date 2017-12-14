@@ -41,6 +41,7 @@ type UserBase struct {
 	Meta         interface{}   `json:"meta,omitempty" bson:"meta,omitempty"`
 	Create       time.Time     `json:"created,omitempty" bson:"created,omitempty"`
 	Updated      time.Time     `json:"updated,omitempty" bson:"updated,omitempty"`
+	SesstionExp  int64         `json:"session_exp,omitempty" bson:"-"`
 }
 
 //UserInfo hold billing info
@@ -213,6 +214,7 @@ func (userBase *UserBase) AuthSignupToken() (string, error) {
 	a.Email = userBase.Email
 	a.UserType = userBase.UserType
 	a.Info = userBase.UserInfo
+	userBase.SesstionExp = a.ExpiresAt
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, a)
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(config.DataConfig.SecretKey))
@@ -220,13 +222,14 @@ func (userBase *UserBase) AuthSignupToken() (string, error) {
 }
 
 type authUser struct {
-	ID       string      `json:"_id"`
-	Email    string      `json:"email"`
-	Name     string      `json:"name"`
-	UserType string      `json:"user_type"`
-	Avatar   string      `json:"avatar"`
-	Status   int         `json:"status"`
-	Info     interface{} `json:"info"`
+	ID          string      `json:"_id"`
+	Email       string      `json:"email"`
+	Name        string      `json:"name"`
+	UserType    string      `json:"user_type"`
+	Avatar      string      `json:"avatar"`
+	Status      int         `json:"status"`
+	SesstionExp int64       `json:"session_exp"`
+	Info        interface{} `json:"info"`
 }
 
 type UserStructResponse struct {
@@ -245,6 +248,7 @@ func (userBase *UserBase) UserResponse() *UserStructResponse {
 	resAuth.UserInfo.Info = userBase.UserInfo
 	resAuth.UserInfo.Status = userBase.Status
 	resAuth.UserInfo.Avatar = userBase.Avatar
+	resAuth.UserInfo.SesstionExp = userBase.SesstionExp
 	return &UserStructResponse{
 		Token:    token,
 		UserInfo: resAuth.UserInfo,
