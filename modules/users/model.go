@@ -67,10 +67,12 @@ type UserAddress struct {
 }
 
 type typeUserCard struct {
-	CardName        string   `json:"card_name,omitempty" bson:"card_name"`
-	CardLastDigital string   `json:"last_digital,omitempty" bson:"last_digital"`
-	CardExpried     string   `json:"expried_date,omitempty" bson:"expried_date"`
-	CustomerID      []string `json:"customer_ids,omitempty" bson:"customer_ids"`
+	CardID          string `json:"card_id,omitempty" bson:"card_id"`
+	CardName        string `json:"card_name,omitempty" bson:"card_name"`
+	CardLastDigital string `json:"last_digital,omitempty" bson:"last_digital"`
+	CardExpried     string `json:"expried_date,omitempty" bson:"expried_date"`
+	CustomerID      string `json:"customer_id,omitempty" bson:"customer_id"`
+	CardToken       string `json:"card_token,omitempty" bson:"-"`
 }
 
 type typeUserWallet struct {
